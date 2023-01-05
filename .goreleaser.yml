@@ -1,0 +1,44 @@
+release:
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+- id: watchfiletail
+  main: ./main.go
+  binary: watchfiletail
+  ldflags:
+    - -s -w
+    - -X main.Version={{.Version}}
+  goos:
+    - windows
+    - darwin
+    - linux
+  goarch:
+    - arm64
+    - amd64
+    - ppc64le
+
+archives:
+- builds:
+  - watchfiletail
+  replacements:
+    darwin: Darwin
+    linux: Linux
+    windows: Windows
+    amd64: x86_64
+  format: tar.gz
+  format_overrides:
+    - goos: windows
+      format: zip
+
+checksum:
+  name_template: 'checksums.txt'
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
