@@ -77,7 +77,9 @@ func main() {
 			select {
 			case event := <-w.Event:
 				contextLogger.Info(event)
-				go tailFile(event.Path, tail.Config{Follow: true}, done)
+				if isFile(event.Path) {
+					go tailFile(event.Path, tail.Config{Follow: true}, done)
+				}
 			case err := <-w.Error:
 				log.Fatalln(err)
 			case <-w.Closed:
@@ -102,8 +104,10 @@ func main() {
 	// Print a list of all of the files and folders currently
 	// being watched and their paths and start tailing.
 	for path, _ := range w.WatchedFiles() {
-		contextLogger.Infof("watching %s", path)
-		go tailFile(path, config, done)
+		if isFile(path) {
+			contextLogger.Infof("watching %s", path)
+			go tailFile(path, config, done)
+		}
 	}
 
 	// Start the watching process - it'll check for changes every 100ms.
@@ -128,4 +132,14 @@ func tailFile(filename string, config tail.Config, done chan bool) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+// isFile returns true if the path is not a directory
+func isFile(path string) bool {
+	fileInfo, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+
+	return !fileInfo.IsDir()
 }
