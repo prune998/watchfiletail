@@ -23,6 +23,7 @@ var (
 	logJSON    = flag.Bool("logjson", true, "log to stdlog using JSON format")
 	folderPath = flag.String("folderPath", "/var/log", "folder to watch for log files")
 	fileMatch  = flag.String("fileMatch", ".*", "regexp to match on the file names, ex: ^file.*$")
+	prettyLogs = flag.Bool("prettyLogs", false, "format JSON logs as multi-line pretty-printed logs for humans")
 )
 
 func printVersion() {
@@ -47,7 +48,7 @@ func main() {
 	log.SetLevel(myLogLevel)
 
 	if *logJSON {
-		log.SetFormatter(&log.JSONFormatter{PrettyPrint: true})
+		log.SetFormatter(&log.JSONFormatter{PrettyPrint: *prettyLogs})
 	}
 
 	// Create the loggers
