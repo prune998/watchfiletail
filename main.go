@@ -67,7 +67,7 @@ func main() {
 
 	// Only files that match the regular expression during file listings
 	// will be watched.
-	r := regexp.MustCompile("^file.*$")
+	r := regexp.MustCompile(*fileMatch)
 	w.AddFilterHook(watcher.RegexFilterHook(r, false))
 	contextLogger.Infof("file matcher added with regexp %s", *fileMatch)
 
@@ -77,16 +77,6 @@ func main() {
 			case event := <-w.Event:
 				contextLogger.Info(event)
 				go tailFile(event.Path, tail.Config{Follow: true}, done)
-				// t, err := tail.TailFile(event.Path, tail.Config{Follow: true})
-				// if err != nil {
-				// 	panic(err)
-				// }
-				// go func() {
-				// 	for line := range t.Lines {
-				// 		fmt.Println(line.Text)
-				// 	}
-				// }()
-
 			case err := <-w.Error:
 				log.Fatalln(err)
 			case <-w.Closed:
