@@ -1,6 +1,6 @@
 module github.com/prune998/watchfiletail
 
-go 1.19
+go 1.21
 
 require (
 	github.com/namsral/flag v1.7.4-pre
