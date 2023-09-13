@@ -68,7 +68,7 @@ spec:
         - name: logging-app-log-dir
           mountPath: /var/log/logging-app
     - name: logstreamer
-      image: ghcr.io/prune998/watchfiletail:v0.0.3
+      image: ghcr.io/prune998/watchfiletail:v0.0.4
       env:
         - name: FOLDERPATH
           value: "/var/log/logging-app"
